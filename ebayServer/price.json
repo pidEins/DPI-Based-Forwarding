@@ -1,0 +1,31 @@
+{   
+   "laptop" :
+	{
+         	"price" : "100"
+	},
+        
+   "iphone" :
+	{
+         	"price" : "100"
+	},
+        
+   "leather" :
+	{ 
+		"price" : "50"
+	},
+   
+   "sports" :
+	{ 
+		"price" : "50"
+	},
+   
+   "SQL" :
+	{ 
+		"price" : "50"
+	},
+   
+   "Networking" :
+	{ 
+		"price" : "50"
+	}
+}

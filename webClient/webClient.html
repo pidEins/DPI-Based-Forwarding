@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>WebSocket Client</title>
+        <style>
+            img {
+
+               width:304px;
+               height:228px;
+            }
+            td.product{
+               text-align:center;
+               padding:5px;
+               border: 1px grey;
+             }
+            div.price{
+               height:20px;
+               }
+        </style>
+    </head>
+
+    <body>
+       <form id="form">
+        <h1>Ecommerce</h1>
+        <table>
+            <tr>
+	        <td class="product">  
+		    <h2>Leather Shoe</h2>
+                    <img src="images/leather.jpeg" alt="shoe" >
+                    <div class="price" id="leather" > </div>
+                    <button type="button" onclick="send_to_server('shoe','leather');">Click for price</button> 
+		</td>
+		
+		<td class="product">  <h2>Sports Shoe</h2>
+                    <img src="images/sports.jpeg" alt="shoe" >
+                    <div class="price" id="sports" > </div>
+                    <button type="button" onclick="send_to_server('shoe','sports');">Click for price</button> 
+		</td>
+           </tr>
+
+           <tr>
+		 <td class="product">    
+		    <h2>Laptop</h2>
+                    <img src="images/laptop.jpeg" alt="laptop">
+                    <div class="price" id="laptop" > </div>
+                    <button type="button" onclick="send_to_server('Electronic','laptop');" >Click for price</button>
+                </td>
+
+                <td class="product">    
+                <h2>Iphone</h2>
+                    <img src="images/iphone.jpeg" alt="mobile" style="height:200px;width:160px;">
+                    <div class="price" id="iphone" > </div>
+                    <button type="button" onclick="send_to_server('Electronic','iphone');" >Click for price</button>
+                </td>
+	   </tr>
+
+           <tr>
+               <td class="product">  
+		    <h2>SQL Book</h2>
+                    <img src="images/SQL.jpeg" alt="SQL" style="height:200px;width:150px;">
+                    <div class="price" id="SQL" > </div>
+                    <button type="button" onclick="send_to_server('book','SQL');">Click for price</button>
+               </td>
+
+               <td class="product">    
+		    <h2>Networking Book</h2>
+                    <img src="images/Networking.jpeg" alt="Networking" style="height:200px;width:150px;">
+                    <div class="price" id="Networking" > </div>
+                    <button type="button" onclick="send_to_server('book','Networking');" >Click for price</button>
+                </td>
+           </tr>
+
+        </table>
+       </form>
+
+       <script>
+
+            var host = "ws://141.217.114.132:9999";
+   	    var  s = new WebSocket(host);
+	    console.log("Host:", host);
+	        
+	    s.onopen = function (e) {
+	         console.log("state:"+s.readyState);
+	         console.log("Socket opened.");
+	    };
+
+	    window.onbeforeunload = confirmWinClose;
+  	    function confirmWinClose() {
+		s.send("close"); 
+		s.close(); 
+		return "close?";
+	    }
+
+	    s.onclose = function (e) {
+		 s.close();
+	         console.log("Socket closed.");
+	    };
+
+	    s.onerror = function (e) {
+	         console.log("Socket error:", e);
+	    };          
+		      
+	    s.onmessage = function (e) {
+	         console.log("Socket message:", e.data);
+	    };            
+
+             
+            function send_to_server(serverName,productName){  
+                  
+		  s.send(JSON.stringify({
+  				"Request Message":
+					{
+					   "Type" : "New Protocol",
+					   "Server Name"  : serverName,
+  					   "Product Name": productName
+					}
+				}));
+
+                  s.onmessage = function (e) {
+                       console.log("Socket message:", e.data);
+                       var reply_message = JSON.parse(e.data);
+		       
+		       if ( reply_message.Reply Message.status == "ok") {
+		       		document.getElementById(productName).innerHTML = "$"+ reply_message.Reply Message.Price;
+		       }
+		      else{
+				document.getElementById(productName).innerHTML = "$NA";
+			}	
+                  };
+            }
+            
+            function toClose()
+            {
+                s.send("close");
+		s.close();
+            }
+
+        </script>
+    </body>
+</html>
